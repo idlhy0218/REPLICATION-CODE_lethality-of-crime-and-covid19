@@ -188,6 +188,7 @@ cat("  Unique ori9:", n_distinct(finaldata_kp_merged$ori9), "\n")
 # -----------------------------------------------------------------------------
 
 saveRDS(finaldata_kp_merged, paste0(basefolder, "Data/UCR known offense_2016_2024/agencylevel_balanced panel_2016_2024 (known to pol).RDS"))
+
 finaldata_kp_merged <- readRDS(paste0(basefolder, "Data/UCR known offense_2016_2024/agencylevel_balanced panel_2016_2024 (known to pol).RDS"))
 
 # -----------------------------------------------------------------------------
@@ -255,7 +256,8 @@ phase_shading <- list(
 
 base_theme <- list(
   theme_bw(),
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)),
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        plot.title  = element_text(face = "bold")),
   scale_x_date(date_breaks = "6 months", date_labels = "%Y-%m", expand = c(0, 0)),
   geom_vline(xintercept = covid_date, linetype = "dashed", color = "red", alpha = 0.7)
 )
@@ -263,22 +265,22 @@ base_theme <- list(
 # Figure 1: four-panel trend plot
 pa <- ggplot(plot_lethality, aes(x = date, y = assault_rate8)) + phase_shading + base_theme +
   geom_line() + scale_y_continuous(labels = comma) +
-  labs(title = "(A) Robbery and Aggravated Assault", x = "", y = "Rate (per 100,000)")
+  labs(title = "a. Robbery and Aggravated Assault", x = "", y = "Rate (per 100,000)")
 
 pb <- ggplot(plot_lethality, aes(x = date, y = homicide_rate)) + phase_shading + base_theme +
   geom_line() + scale_y_continuous(labels = comma) +
-  labs(title = "(B) Homicide", x = "", y = "Rate (per 100,000)")
+  labs(title = "b. Homicide", x = "", y = "Rate (per 100,000)")
 
 pc <- ggplot(plot_lethality, aes(x = date, y = lethality8*1000)) + phase_shading + base_theme +
-  geom_line() + labs(title = "(C) Lethality", x = "", y = "Rate (per 1,000)")
+  geom_line() + labs(title = "c. Lethality", x = "", y = "Rate (per 1,000)")
 
 pd <- ggplot(filter(plot_covid, date <= as.Date("2023-06-01")), aes(x = date, y = deaths)) +
   phase_shading + base_theme + geom_line() + scale_y_continuous(labels = comma) +
-  labs(title = "(D) COVID-19 Deaths", x = "", y = "COVID-19 Deaths")
+  labs(title = "d. COVID-19 Deaths", x = "", y = "COVID-19 Deaths")
 
 p_final <- grid.arrange(pa, pb, pc, pd, nrow = 2)
 ggsave(paste0(basefolder, "Figures/Fig 1.png"), 
-       p_final, width = 10, height = 10, dpi = 300)
+       p_final, width = 10, height = 8, dpi = 300)
 
 
 ## 6-3. Pre/post comparison: three-month windows around COVID onset ------------
